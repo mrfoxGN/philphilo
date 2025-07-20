@@ -72,7 +72,7 @@ void	philo_timestamp(t_list *philos, char *action, useconds_t t)
 	if (philo->data->repeat_count * philo->data->philo_count != \
 			eat_count && (!died || action[7] == 'd'))
 	{
-		printf("[\033[1;39m%06u\033[0;39m]  \033[1;96m%03d  \033[0;39m%s\n", \
+		printf("%06u %03d  %s\n", \
 			time, philo->id, action);
 	}
 	if (action[10] == 'e')
@@ -86,7 +86,7 @@ void	philo_timestamp(t_list *philos, char *action, useconds_t t)
 
 void	*philo_exit(t_list *philos, char *param, t_philo_err err_code)
 {
-	t_philo	*philo;
+	t_philo	*philo; 
 	t_list	*temp;
 
 	temp = philos;

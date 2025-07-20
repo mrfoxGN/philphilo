@@ -1,6 +1,6 @@
 #include "../includes/philo.h"
 
-void	philo_actions(t_list *node, t_philo *philo, t_philo *next)
+void	 philo_actions(t_list *node, t_philo *philo, t_philo *next)
 {
 	pthread_mutex_lock(&philo->fork_lock);
 	philo_timestamp(node, PHILO_TAKE_FORK, 0);
@@ -67,7 +67,7 @@ void	*philo_monitor(t_list *start, t_philo *philo)
 	}
 }
 
-void	*philo_init(int philo_count, t_list *philos)
+void	* philo_init(int philo_count, t_list *philos)
 {
 	int		i;
 	t_list	*start;

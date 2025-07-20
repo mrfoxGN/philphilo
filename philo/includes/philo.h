@@ -8,11 +8,11 @@
 # include <pthread.h>
 # include <unistd.h>
 
-# define PHILO_EAT "\033[1;93mis eating 🍝\033[0;39m"
-# define PHILO_SLEEP "\033[1;95mis sleeping 🌙\033[0;39m"
-# define PHILO_THINK "\033[1;90mis thinking 💭\033[0;39m"
-# define PHILO_TAKE_FORK "\033[1;94mhas taken a fork 🍴\033[0;39m"
-# define PHILO_DIE "\033[1;91mdied 💀\033[0;39m"
+# define PHILO_EAT "is eating "
+# define PHILO_SLEEP "is sleeping "
+# define PHILO_THINK "is thinking "
+# define PHILO_TAKE_FORK "has taken a fork "
+# define PHILO_DIE "died "
 
 /* Enum to handle errors in philosophers */
 typedef enum e_philo_err

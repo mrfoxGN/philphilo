@@ -48,8 +48,10 @@ int	main(int argc, char **argv)
 	d.init_time = philo_get_time();
 	d.died = 0;
 	d.eat_count = 0;
-	pthread_mutex_init(&d.died_lock, NULL); 
+	/*a ce moment la tous les element de d sont initialises*/
+	pthread_mutex_init(&d.died_lock, NULL);
 	pthread_mutex_init(&d.eat_count_lock, NULL);
+	/*initialisation des mutex*/
 	philos = philo_lst(&d);
 	ft_lstlast(philos)->next = philos;
 	philo_init(d.philo_count, philos);
