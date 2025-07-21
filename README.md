@@ -1,0 +1,1 @@
+echo "=== TEST SPÉCIFIQUE: ./philo 200 100 60 60 avec timeout ===" && timeout 5 ./philo 200 100 60 60 && echo "✅ Programme fonctionne - Arrêté par timeout (pas un bug)" || echo "❌ Programme s'est arrêté tout seul - BUG DÉTECTÉ"
