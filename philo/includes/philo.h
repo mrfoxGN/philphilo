@@ -24,7 +24,7 @@
 # define PHILO_SLEEP "is sleeping "
 # define PHILO_THINK "is thinking "
 # define PHILO_TAKE_FORK "has taken a fork "
-# define PHILO_DIE "died "
+# define PHILO_DIE "\033[1;91mdied 💀\033[0;39m"
 
 /* Enum to handle errors in philosophers */
 typedef enum e_philo_err
