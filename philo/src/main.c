@@ -53,17 +53,15 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	d = parse_args(argv);
-	if (d.philo_count <= 0 || d.philo_count > 800 || d.die_time == -1 || \
-		d.eat_time == -1 || d.sleep_time == -1 || d.repeat_count == -1 || \
-		!d.repeat_count)
+	if (d.philo_count <= 0 || d.philo_count > 800 || d.die_time == -1
+		|| d.eat_time == -1 || d.sleep_time == -1 || d.repeat_count == -1
+		|| !d.repeat_count)
 		return (1);
 	d.init_time = philo_get_time();
 	d.died = 0;
 	d.eat_count = 0;
-	/*a ce moment la tous les element de d sont initialises*/
 	pthread_mutex_init(&d.died_lock, NULL);
 	pthread_mutex_init(&d.eat_count_lock, NULL);
-	/*initialisation des mutex*/
 	philos = philo_lst(&d);
 	ft_lstlast(philos)->next = philos;
 	philo_init(d.philo_count, philos);

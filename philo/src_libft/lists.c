@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../includes/libft_fncts.h"
 
 t_list	*ft_lstnew(void *content)

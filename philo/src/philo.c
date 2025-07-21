@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../includes/philo.h"
 
-void	 philo_actions(t_list *node, t_philo *philo, t_philo *next)
+void	philo_actions(t_list *node, t_philo *philo, t_philo *next)
 {
 	pthread_mutex_lock(&philo->fork_lock);
 	philo_timestamp(node, PHILO_TAKE_FORK, 0);
@@ -41,7 +40,8 @@ void	*start_thread(void *node)
 	next = ((struct s_list *)node)->next->content;
 	ft_usleep(!(philo->id % 2) * 2);
 	pthread_mutex_lock(&philo->data->died_lock);
-	while (philo->id != next->id && !philo->data->died && (philo->data->repeat_count == -2 || ++i < philo->data->repeat_count))
+	while (philo->id != next->id && !philo->data->died
+		&& (philo->data->repeat_count == -2 || ++i < philo->data->repeat_count))
 	{
 		pthread_mutex_unlock(&philo->data->died_lock);
 		philo_actions(node, philo, next);
@@ -65,9 +65,9 @@ void	*philo_monitor(t_list *start, t_philo *philo)
 		pthread_mutex_lock(&philo->last_meal_lock);
 		last_meal = philo->last_meal;
 		pthread_mutex_unlock(&philo->last_meal_lock);
-		if (philo_get_time() - philo->data->init_time - last_meal >= \
-			philo->data->die_time || eat_c == \
-			philo->data->philo_count * philo->data->repeat_count)
+		if (philo_get_time() - philo->data->init_time - last_meal
+			>=philo->data->die_time || eat_c
+			== philo->data->philo_count * philo->data->repeat_count)
 		{
 			pthread_mutex_lock(&philo->data->died_lock);
 			philo->data->died = 1;
@@ -76,11 +76,11 @@ void	*philo_monitor(t_list *start, t_philo *philo)
 				philo_timestamp(start, PHILO_DIE, 0);
 			return (NULL);
 		}
-		start = start->next; 
+		start = start->next;
 	}
 }
 
-void	* philo_init(int philo_count, t_list *philos)
+void	*philo_init(int philo_count, t_list *philos)
 {
 	int		i;
 	t_list	*start;

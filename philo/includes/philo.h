@@ -5,11 +5,10 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anguenda <anguenda@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/21 11:50:25 by anguenda          #+#    #+#             */
-/*   Updated: 2025/07/21 11:50:25 by anguenda         ###   ########.fr       */
+/*   Created: 2025/07/21 13:53:33 by anguenda          #+#    #+#             */
+/*   Updated: 2025/07/21 13:53:33 by anguenda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef PHILO_H
 
@@ -66,7 +65,7 @@ typedef struct s_philo
 	useconds_t			last_meal;
 	pthread_mutex_t		last_meal_lock;
 	struct s_philo_data	*data;
-}   t_philo;
+}	t_philo;
 /* Prints error message with custom param given an error code */
 int			philo_perror(char *param, t_philo_err err_code);
 

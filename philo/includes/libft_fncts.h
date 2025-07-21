@@ -5,15 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anguenda <anguenda@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/21 11:50:31 by anguenda          #+#    #+#             */
-/*   Updated: 2025/07/21 11:50:31 by anguenda         ###   ########.fr       */
+/*   Created: 2025/07/21 13:52:30 by anguenda          #+#    #+#             */
+/*   Updated: 2025/07/21 13:52:30 by anguenda         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef LIBFT_FNCTS_H
 
-#ifndef LIBFT_TOOLS_H
-
-# define LIBFT_TOOLS_H
+# define LIBFT_FNCTS_H
 
 # include <unistd.h>
 # include <stdlib.h>
