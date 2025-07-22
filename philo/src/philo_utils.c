@@ -86,7 +86,7 @@ void	philo_timestamp(t_list *philos, char *action, useconds_t t)
 	{
 		printf("%06u %03d  %s\n", time, philo->id, action);
 	}
-	if (action[10] == 'e')
+	if (action[3] == 'e')
 		philo->data->eat_count++;
 	pthread_mutex_unlock(&philo->data->eat_count_lock);
 	pthread_mutex_unlock(&philo->data->died_lock);
