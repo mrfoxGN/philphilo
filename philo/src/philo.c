@@ -13,16 +13,19 @@
 #include "../includes/philo.h"
 
 void	philo_actions(t_list *node, t_philo *philo, t_philo *next)
-{ 
-	if (philo->id %2) {
-		pthread_mutex_lock(&philo->fork_lock); // left
+{
+	if (philo->id % 2)
+	{
+		pthread_mutex_lock(&philo->fork_lock);
 		philo_timestamp(node, PHILO_TAKE_FORK, 0);
-		pthread_mutex_lock(&next->fork_lock); // right
+		pthread_mutex_lock(&next->fork_lock);
 		philo_timestamp(node, PHILO_TAKE_FORK, 0);
-	} else {
-		pthread_mutex_lock(&next->fork_lock); // right
+	}
+	else
+	{
+		pthread_mutex_lock(&next->fork_lock);
 		philo_timestamp(node, PHILO_TAKE_FORK, 0);
-		pthread_mutex_lock(&philo->fork_lock); // left
+		pthread_mutex_lock(&philo->fork_lock);
 		philo_timestamp(node, PHILO_TAKE_FORK, 0);
 	}
 	pthread_mutex_lock(&philo->last_meal_lock);
@@ -45,7 +48,7 @@ void	*start_thread(void *node)
 	i = -1;
 	philo = ((struct s_list *)node)->content;
 	next = ((struct s_list *)node)->next->content;
-	//ft_usleep(!(philo->id % 2) * 2);
+	ft_usleep(!(philo->id % 2) * 2);
 	if (philo->id % 2 == 0)
 		usleep(100);
 	pthread_mutex_lock(&philo->data->died_lock);
