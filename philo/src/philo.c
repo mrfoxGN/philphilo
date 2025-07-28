@@ -38,7 +38,8 @@ void	*start_thread(void *node)
 	i = -1;
 	philo = ((struct s_list *)node)->content;
 	next = ((struct s_list *)node)->next->content;
-	ft_usleep(!(philo->id % 2) * 2);
+	if (philo->id % 2 == 0)
+		usleep(100);
 	pthread_mutex_lock(&philo->data->died_lock);
 	while (philo->id != next->id && !philo->data->died
 		&& (philo->data->repeat_count == -2 || ++i < philo->data->repeat_count))
