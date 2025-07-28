@@ -13,18 +13,25 @@
 #include "../includes/philo.h"
 
 void	philo_actions(t_list *node, t_philo *philo, t_philo *next)
-{
-	pthread_mutex_lock(&philo->fork_lock);
-	philo_timestamp(node, PHILO_TAKE_FORK, 0);
-	pthread_mutex_lock(&next->fork_lock);
-	philo_timestamp(node, PHILO_TAKE_FORK, 0);
+{ 
+	if (philo->id %2) {
+		pthread_mutex_lock(&philo->fork_lock); // left
+		philo_timestamp(node, PHILO_TAKE_FORK, 0);
+		pthread_mutex_lock(&next->fork_lock); // right
+		philo_timestamp(node, PHILO_TAKE_FORK, 0);
+	} else {
+		pthread_mutex_lock(&next->fork_lock); // right
+		philo_timestamp(node, PHILO_TAKE_FORK, 0);
+		pthread_mutex_lock(&philo->fork_lock); // left
+		philo_timestamp(node, PHILO_TAKE_FORK, 0);
+	}
 	pthread_mutex_lock(&philo->last_meal_lock);
 	philo->last_meal = philo_get_time() - philo->data->init_time;
 	pthread_mutex_unlock(&philo->last_meal_lock);
 	philo_timestamp(node, PHILO_EAT, philo->data->eat_time);
 	philo_timestamp(node, PHILO_SLEEP, 0);
-	pthread_mutex_unlock(&next->fork_lock);
 	pthread_mutex_unlock(&philo->fork_lock);
+	pthread_mutex_unlock(&next->fork_lock);
 	ft_usleep(philo->data->sleep_time);
 	philo_timestamp(node, PHILO_THINK, 0);
 }
@@ -38,6 +45,7 @@ void	*start_thread(void *node)
 	i = -1;
 	philo = ((struct s_list *)node)->content;
 	next = ((struct s_list *)node)->next->content;
+	//ft_usleep(!(philo->id % 2) * 2);
 	if (philo->id % 2 == 0)
 		usleep(100);
 	pthread_mutex_lock(&philo->data->died_lock);

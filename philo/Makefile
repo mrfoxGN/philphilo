@@ -12,7 +12,7 @@ SRC = \
 OBJ = $(SRC:.c=.o)
 INC = -Iincludes
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=thread
 
 all: $(NAME)
 
