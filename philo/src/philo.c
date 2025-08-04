@@ -14,6 +14,7 @@
 
 void	philo_actions(t_list *node, t_philo *philo, t_philo *next)
 {
+	long stagger;
 	if (philo->id % 2)
 	{
 		pthread_mutex_lock(&philo->fork_lock);
@@ -37,6 +38,10 @@ void	philo_actions(t_list *node, t_philo *philo, t_philo *next)
 	pthread_mutex_unlock(&next->fork_lock);
 	ft_usleep(philo->data->sleep_time);
 	philo_timestamp(node, PHILO_THINK, 0);
+	if (philo->data->philo_count % 2 == 1) {
+        stagger = (long) philo->data->eat_time / 2;
+        ft_usleep((int)stagger);
+    }
 }
 
 void	*start_thread(void *node)

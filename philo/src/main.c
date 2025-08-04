@@ -31,7 +31,7 @@ static t_philo_data	parse_args(char **argv)
 	if (d.sleep_time < 0)
 		philo_exit(NULL, argv[4], INV_SLEEP_TIME);
 	d.repeat_count = -2;
-	d.die_time += 10;
+	//d.die_time += 10;
 	if (argv[5])
 	{
 		d.repeat_count = ft_atoi(argv[5]);
@@ -55,7 +55,7 @@ int	main(int argc, char **argv)
 	}
 	d = parse_args(argv);
 	if (d.philo_count <= 0 || d.philo_count > 800 || d.die_time < -0
-		|| d.eat_time < 0 || d.sleep_time < 0 || d.repeat_count < 0
+		|| d.eat_time < 0 || d.sleep_time < 0 || d.repeat_count == -1
 		|| !d.repeat_count)
 		return (1);
 	d.init_time = philo_get_time();
