@@ -32,7 +32,7 @@ static void	philo_take_forks(t_list *node, t_philo *philo, t_philo *next)
 
 void	philo_actions(t_list *node, t_philo *philo, t_philo *next)
 {
-	long stagger;
+	long	stagger;
 
 	philo_take_forks(node, philo, next);
 	pthread_mutex_lock(&philo->last_meal_lock);
