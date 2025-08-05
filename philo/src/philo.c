@@ -101,6 +101,7 @@ void	*philo_monitor(t_list *start, t_philo *philo)
 			return (NULL);
 		}
 		start = start->next;
+		ft_usleep(500);
 	}
 }
 
