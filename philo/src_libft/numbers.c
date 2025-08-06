@@ -28,6 +28,8 @@ long long	ft_atoi(const char *nptr)
 		nptr++;
 	while (*nptr >= '0' && *nptr <= '9')
 	{
+		if (10 * n + (*nptr - '0') < n)
+			return (-1);
 		n = 10 * n + (*nptr - '0');
 		nptr++;
 	}

@@ -68,31 +68,21 @@ int	philo_perror(char *param, t_philo_err err_code)
 	return (1);
 }
 
-void	philo_timestamp(t_list *philos, char *action, useconds_t t)
+void	philo_timestamp(t_list *philos, char *action)
 {
-	useconds_t	time;
 	t_philo		*philo;
-	int			died;
-	int			eat_count;
 
 	philo = philos->content;
 	pthread_mutex_lock(&philo->data->died_lock);
-	died = philo->data->died;
-	pthread_mutex_lock(&philo->data->eat_count_lock);
-	eat_count = philo->data->eat_count;
-	time = philo_get_time() - philo->data->init_time;
-	if (philo->data->repeat_count * philo->data->philo_count
-		!= eat_count && (!died || action[7] == 'd'))
+	if (philo->data->died)
 	{
-		printf("%06u %03d  %s\n", time, philo->id, action);
+		pthread_mutex_unlock(&philo->data->died_lock);
+		return ;
 	}
-	if (action[3] == 'e')
-		philo->data->eat_count++;
-	pthread_mutex_unlock(&philo->data->eat_count_lock);
+	pthread_mutex_lock(&philo->data->print_lock);
+	printf("%lld %d %s\n", get_time(philo->data), philo->id, action);
+	pthread_mutex_unlock(&philo->data->print_lock);
 	pthread_mutex_unlock(&philo->data->died_lock);
-	if (philo->data->repeat_count * philo->data->philo_count
-		!= eat_count && (!died || action[7] == 'd'))
-		ft_usleep(t);
 }
 
 void	*philo_exit(t_list *philos, char *param, t_philo_err err_code)

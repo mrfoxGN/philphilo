@@ -12,26 +12,45 @@
 
 #include "../includes/philo.h"
 
-useconds_t	philo_get_time(void)
+long long	get_time(t_philo_data *data)
 {
-	struct timeval	t;
+	struct timeval	tv;
+	long long		m_sec;
+	long long		result;
 
-	gettimeofday(&t, NULL);
-	return (t.tv_sec * 1000 + t.tv_usec / 1000);
+	gettimeofday(&tv, NULL);
+	m_sec = tv.tv_sec * 1000;
+	pthread_mutex_lock(&data->time_lock);
+	m_sec += (tv.tv_usec / 1000);
+	if (!data->init_time)
+		data->init_time = m_sec;
+	result = m_sec - data->init_time;
+	pthread_mutex_unlock(&data->time_lock);
+	return (result);
 }
 
-int	ft_usleep(useconds_t usec)
+bool	check_death(t_philo_data *data)
 {
-	useconds_t		before;
-	useconds_t		after;
-
-	before = philo_get_time();
-	after = before;
-	while (after - before < usec)
+	pthread_mutex_lock(&(data->died_lock));
+	if (data->died)
 	{
-		if (usleep(usec) == -1)
-			return (-1);
-		after = philo_get_time();
+		pthread_mutex_unlock(&(data->died_lock));
+		return (true);
+	}
+	pthread_mutex_unlock(&(data->died_lock));
+	return (false);
+}
+
+int	ft_usleep(long long milliseconds, t_philo_data *data)
+{
+	long long	start;
+
+	start = get_time(data);
+	while ((get_time(data) - start) < milliseconds)
+	{
+		if (check_death(data))
+			return (0);
+		usleep(500);
 	}
 	return (0);
 }

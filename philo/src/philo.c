@@ -12,96 +12,75 @@
 
 #include "../includes/philo.h"
 
-static void	philo_take_forks(t_list *node, t_philo *philo, t_philo *next)
+static int	check_death_2(t_philo *philo, long long start_time, long last_meal)
 {
-	if (philo->id % 2)
-	{
-		pthread_mutex_lock(&philo->fork_lock);
-		philo_timestamp(node, PHILO_TAKE_FORK, 0);
-		pthread_mutex_lock(&next->fork_lock);
-		philo_timestamp(node, PHILO_TAKE_FORK, 0);
-	}
-	else
-	{
-		pthread_mutex_lock(&next->fork_lock);
-		philo_timestamp(node, PHILO_TAKE_FORK, 0);
-		pthread_mutex_lock(&philo->fork_lock);
-		philo_timestamp(node, PHILO_TAKE_FORK, 0);
-	}
-}
+	long long	now;
 
-void	philo_actions(t_list *node, t_philo *philo, t_philo *next)
-{
-	long	stagger;
-
-	philo_take_forks(node, philo, next);
-	pthread_mutex_lock(&philo->last_meal_lock);
-	philo->last_meal = philo_get_time() - philo->data->init_time;
-	pthread_mutex_unlock(&philo->last_meal_lock);
-	philo_timestamp(node, PHILO_EAT, philo->data->eat_time);
-	philo_timestamp(node, PHILO_SLEEP, 0);
-	pthread_mutex_unlock(&philo->fork_lock);
-	pthread_mutex_unlock(&next->fork_lock);
-	ft_usleep(philo->data->sleep_time);
-	philo_timestamp(node, PHILO_THINK, 0);
-	if (philo->data->philo_count % 2 == 1)
+	now = get_time(philo->data);
+	if ((last_meal > 0 && now - last_meal >= philo->data->die_time)
+		|| (last_meal == 0 && now - start_time >= philo->data->die_time))
 	{
-		stagger = (long) philo->data->eat_time / 2;
-		ft_usleep((int)stagger);
-	}
-}
-
-void	*start_thread(void *node)
-{
-	t_philo		*philo;
-	t_philo		*next;
-	int			i;
-
-	i = -1;
-	philo = ((struct s_list *)node)->content;
-	next = ((struct s_list *)node)->next->content;
-	ft_usleep(!(philo->id % 2) * 2);
-	if (philo->id % 2 == 0)
-		usleep(100);
-	pthread_mutex_lock(&philo->data->died_lock);
-	while (philo->id != next->id && !philo->data->died
-		&& (philo->data->repeat_count == -2 || ++i < philo->data->repeat_count))
-	{
-		pthread_mutex_unlock(&philo->data->died_lock);
-		philo_actions(node, philo, next);
 		pthread_mutex_lock(&philo->data->died_lock);
+		philo->data->died = 1;
+		pthread_mutex_lock(&philo->data->print_lock);
+		printf("%lld %d %s\n", now, philo->id, PHILO_DIE);
+		pthread_mutex_unlock(&philo->data->print_lock);
+		pthread_mutex_unlock(&philo->data->died_lock);
+		return (1);
 	}
-	pthread_mutex_unlock(&philo->data->died_lock);
-	return (NULL);
+	return (0);
+}
+
+static int	check_eat_count(t_philo *philo, long eat_c)
+{
+	if (philo->data->repeat_count != -2
+		&& eat_c >= philo->data->philo_count * philo->data->repeat_count)
+	{
+		pthread_mutex_lock(&philo->data->died_lock);
+		philo->data->died = 1;
+		pthread_mutex_unlock(&philo->data->died_lock);
+		return (1);
+	}
+	return (0);
+}
+
+static int	philo_check_status(t_philo *philo, long long start_time)
+{
+	long		eat_c;
+	long		last_meal;
+
+	pthread_mutex_lock(&philo->data->eat_count_lock);
+	eat_c = philo->data->eat_count;
+	pthread_mutex_unlock(&philo->data->eat_count_lock);
+	pthread_mutex_lock(&philo->last_meal_lock);
+	last_meal = philo->last_meal;
+	pthread_mutex_unlock(&philo->last_meal_lock);
+	if (check_death_2(philo, start_time, last_meal)
+		|| check_eat_count(philo, eat_c))
+		return (1);
+	return (0);
 }
 
 void	*philo_monitor(t_list *start, t_philo *philo)
 {
-	long	eat_c;
-	long	last_meal;
+	t_list		*current;
+	long long	start_time;
+	int			i;
 
+	current = start;
+	start_time = get_time(((t_philo *)start->content)->data);
 	while (1)
 	{
-		philo = start->content;
-		pthread_mutex_lock(&philo->data->eat_count_lock);
-		eat_c = philo->data->eat_count;
-		pthread_mutex_unlock(&philo->data->eat_count_lock);
-		pthread_mutex_lock(&philo->last_meal_lock);
-		last_meal = philo->last_meal;
-		pthread_mutex_unlock(&philo->last_meal_lock);
-		if (philo_get_time() - philo->data->init_time - last_meal
-			>=philo->data->die_time || eat_c
-			== philo->data->philo_count * philo->data->repeat_count)
+		i = 0;
+		while (i < ((t_philo *)start->content)->data->philo_count)
 		{
-			pthread_mutex_lock(&philo->data->died_lock);
-			philo->data->died = 1;
-			pthread_mutex_unlock(&philo->data->died_lock);
-			if (eat_c != philo->data->philo_count * philo->data->repeat_count)
-				philo_timestamp(start, PHILO_DIE, 0);
-			return (NULL);
+			philo = current->content;
+			if (philo_check_status(philo, start_time))
+				return (NULL);
+			current = current->next;
+			i++;
 		}
-		start = start->next;
-		ft_usleep(500);
+		ft_usleep(1, philo->data);
 	}
 }
 

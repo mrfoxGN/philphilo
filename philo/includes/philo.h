@@ -19,7 +19,7 @@
 # include <stdio.h>
 # include <pthread.h>
 # include <unistd.h>
-
+# include <stdbool.h>
 # define PHILO_EAT "is eating "
 # define PHILO_SLEEP "is sleeping "
 # define PHILO_THINK "is thinking "
@@ -45,7 +45,7 @@ typedef enum e_philo_err
 typedef struct s_philo_data
 {
 	int				philo_count;
-	useconds_t		init_time;
+	long long		init_time;
 	long			repeat_count;
 	long long		die_time;
 	long long		eat_time;
@@ -54,6 +54,8 @@ typedef struct s_philo_data
 	pthread_mutex_t	eat_count_lock;
 	int				died;
 	pthread_mutex_t	died_lock;
+	pthread_mutex_t	print_lock;
+	pthread_mutex_t	time_lock;
 }					t_philo_data;
 
 /* Struct to handle info for every philosopher */
@@ -62,10 +64,11 @@ typedef struct s_philo
 	int					id;
 	pthread_t			thread_id;
 	pthread_mutex_t		fork_lock;
-	useconds_t			last_meal;
+	long long			last_meal;
 	pthread_mutex_t		last_meal_lock;
 	struct s_philo_data	*data;
 }	t_philo;
+
 /* Prints error message with custom param given an error code */
 int			philo_perror(char *param, t_philo_err err_code);
 
@@ -73,10 +76,10 @@ int			philo_perror(char *param, t_philo_err err_code);
 void		*philo_exit(t_list *philos, char *param, t_philo_err err_code);
 
 /* Personal & more precise implementation of the usleep function */
-int			ft_usleep(useconds_t usec);
+int			ft_usleep(long long milliseconds, t_philo_data *data);
 
 /* Returns current time in miliseconds */
-useconds_t	philo_get_time(void);
+long long	philo_get_time(void);
 
 /* Fills an array with the default info for every philosopher */
 t_list		*philo_lst(t_philo_data *d);
@@ -85,5 +88,10 @@ t_list		*philo_lst(t_philo_data *d);
 void		*philo_init(int philo_count, t_list *philos);
 
 /* Prints current state of a philosopher if applicable */
-void		philo_timestamp(t_list *philos, char *action, useconds_t t);
+void		philo_timestamp(t_list *philos, char *status);
+long long	get_time(t_philo_data *data);
+bool		check_death(t_philo_data *data);
+void		*start_thread(void *node);
+void		philo_actions(t_list *node, t_philo *philo, t_philo *next);
+
 #endif

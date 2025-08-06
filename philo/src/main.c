@@ -40,11 +40,24 @@ static t_philo_data	parse_args(char **argv)
 	return (d);
 }
 
-int	main(int argc, char **argv)
+static void	init_mutexes(t_philo_data *d)
 {
-	t_philo_data	d;
-	t_list			*philos;
+	pthread_mutex_init(&d->died_lock, NULL);
+	pthread_mutex_init(&d->eat_count_lock, NULL);
+	pthread_mutex_init(&d->print_lock, NULL);
+	pthread_mutex_init(&d->time_lock, NULL);
+}
 
+static int	handle_one_philo(t_philo_data *d)
+{
+	printf("0 1 has taken a fork\n");
+	usleep(d->die_time * 1000);
+	printf("%lld 1 %s\n", d->die_time, PHILO_DIE);
+	return (0);
+}
+
+static int	check_args(int argc, char **argv, t_philo_data *d)
+{
 	if (argc != 5 && argc != 6)
 	{
 		philo_exit(NULL, NULL, INV_ARGS);
@@ -52,16 +65,27 @@ int	main(int argc, char **argv)
 		printf(" <eat_time> <sleep_time> [<repeat_times>]\n");
 		return (1);
 	}
-	d = parse_args(argv);
-	if (d.philo_count <= 0 || d.philo_count > 800 || d.die_time < -0
-		|| d.eat_time < 0 || d.sleep_time < 0 || d.repeat_count == -1
-		|| !d.repeat_count)
+	*d = parse_args(argv);
+	if (d->philo_count <= 0 || d->philo_count > 800 || d->die_time < 0
+		|| d->eat_time < 0 || d->sleep_time < 0
+		|| d->repeat_count == -1 || !d->repeat_count)
 		return (1);
-	d.init_time = philo_get_time();
+	return (0);
+}
+
+int	main(int argc, char **argv)
+{
+	t_philo_data	d;
+	t_list			*philos;
+
+	if (check_args(argc, argv, &d))
+		return (1);
+	if (d.philo_count == 1)
+		return (handle_one_philo(&d));
+	d.init_time = 0;
 	d.died = 0;
 	d.eat_count = 0;
-	pthread_mutex_init(&d.died_lock, NULL);
-	pthread_mutex_init(&d.eat_count_lock, NULL);
+	init_mutexes(&d);
 	philos = philo_lst(&d);
 	ft_lstlast(philos)->next = philos;
 	philo_init(d.philo_count, philos);

@@ -5,14 +5,16 @@ SRC = \
     src/philo.c \
     src/philo_utils.c \
     src/philotime.c \
+    src/norme.c \
     src_libft/strings.c \
     src_libft/numbers.c \
-    src_libft/lists.c
+    src_libft/lists.c 
+
 
 OBJ = $(SRC:.c=.o)
 INC = -Iincludes
-CC = gcc
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=thread
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address
 
 all: $(NAME)
 
